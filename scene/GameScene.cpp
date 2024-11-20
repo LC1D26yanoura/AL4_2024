@@ -1,19 +1,33 @@
 #include "GameScene.h"
-#include "TextureManager.h"
-#include <cassert>
+
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {}
+// デストラクタ
+GameScene::~GameScene() {
+	delete sprite_;
+
+	delete player_;
+}
 
 void GameScene::Initialize() {
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+
+	textureHandle_ = TextureManager::Load("mario.jpg");
+	sprite_ = Sprite::Create(textureHandle_, {100, 50});
+
+	model_ = Model::Create();
+	// ViewProjectionの初期化
+	viewProjection_.Initialize();
+
+	player_ = new Player();
+	player_->Initialize(model_, textureHandle_, &viewProjection_);
 }
 
-void GameScene::Update() {}
+void GameScene::Update() { player_->Update(); }
 
 void GameScene::Draw() {
 
@@ -37,6 +51,8 @@ void GameScene::Draw() {
 #pragma region 3Dオブジェクト描画
 	// 3Dオブジェクト描画前処理
 	Model::PreDraw(commandList);
+
+	player_->Draw();
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる

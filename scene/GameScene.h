@@ -4,16 +4,16 @@
 #include "DirectXCommon.h"
 #include "Input.h"
 #include "Model.h"
+#include "Player.h"
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "TextureManager.h"
+#include <cassert>
 
-/// <summary>
-/// ゲームシーン
-/// </summary>
 class GameScene {
-
-public: // メンバ関数
+public:
+	Sprite* sprite_ = nullptr;
 	/// <summary>
 	/// コンストクラタ
 	/// </summary>
@@ -39,12 +39,15 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-private: // メンバ変数
+private:
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
+	uint32_t textureHandle_ = 0;
+	// 自キャラ
+	Player* player_ = nullptr;
+	// プレイヤーのモデル
+	Model* model_ = nullptr;
 
-	/// <summary>
-	/// ゲームシーン用
-	/// </summary>
+	ViewProjection viewProjection_;
 };
