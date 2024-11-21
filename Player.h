@@ -3,6 +3,9 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "input.h"
+#include "MathUtilityForText.h"
+#include "imgui.h"
 
 class Player {
 public:
@@ -21,6 +24,12 @@ public:
 	/// </summary>
 	void Draw();
 
+/// <summary>
+/// 
+/// </summary>
+	
+	void Rotate();
+
 private:
 	//ワールド変換データ
 	WorldTransform worldTransform_;
@@ -30,4 +39,6 @@ private:
 	uint32_t textureHandle_ = 0u;
 	//
 	ViewProjection* viewProjection_ = nullptr;
+	//キーボード入力
+	Input* input_ = nullptr;
 };

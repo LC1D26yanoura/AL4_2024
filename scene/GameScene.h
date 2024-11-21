@@ -39,6 +39,9 @@ public:
 	/// </summary>
 	void Draw();
 
+	
+
+	
 private:
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -50,4 +53,5 @@ private:
 	Model* model_ = nullptr;
 
 	ViewProjection viewProjection_;
+	
 };

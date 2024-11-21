@@ -6,8 +6,8 @@ GameScene::GameScene() {}
 // デストラクタ
 GameScene::~GameScene() {
 	delete sprite_;
-
 	delete player_;
+	
 }
 
 void GameScene::Initialize() {
@@ -25,11 +25,16 @@ void GameScene::Initialize() {
 
 	player_ = new Player();
 	player_->Initialize(model_, textureHandle_, &viewProjection_);
+	
 }
 
-void GameScene::Update() { player_->Update(); }
+void GameScene::Update() { 
+	player_->Update();
+	player_->Rotate();
+}
+    
 
-void GameScene::Draw() {
+	void GameScene::Draw() {
 
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
@@ -74,4 +79,5 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
-}
+    }
+
