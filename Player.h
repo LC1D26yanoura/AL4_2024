@@ -7,6 +7,7 @@
 #include "MathUtilityForText.h"
 #include "imgui.h"
 #include "PlayerBullet.h"
+#include <list>
 
 class Player {
 public:
@@ -35,6 +36,11 @@ public:
 /// </summary>
 	void Attack();
 
+/// <summary>
+/// デストラクタ
+/// </summary>
+	~Player();
+
 private:
 	//ワールド変換データ
 	WorldTransform worldTransform_;
@@ -47,5 +53,6 @@ private:
 	//キーボード入力
 	Input* input_ = nullptr;
 	//弾
-	PlayerBullet* bullet_ = nullptr;
+	std::list<PlayerBullet*> bullets_;
+
 };

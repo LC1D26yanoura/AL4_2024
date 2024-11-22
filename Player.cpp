@@ -2,6 +2,13 @@
 
 #include "cassert"
 
+Player::~Player() { 
+	for (PlayerBullet* bullet : bullets_) {
+	delete bullet;
+	}
+
+}
+
 void Player::Initialize(Model* model,  uint32_t textureHandle,ViewProjection*viewProjection) { 
 	assert(model);
 
@@ -55,16 +62,16 @@ void Player::Update() {
 	//攻撃呼び出し
 	Attack();
 	//弾更新
-	if (bullet_) {
-		bullet_->Update();
+	for (PlayerBullet * bullet : bullets_) {
+		bullet->Update();
 	}
 }
 
 void Player::Draw() { 
 	model_->Draw(worldTransform_, *viewProjection_, textureHandle_); 
 	//弾描画
-	if (bullet_) {
-		bullet_->Draw(*viewProjection_);
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Draw(*viewProjection_);
 	}
 }
 
@@ -81,10 +88,13 @@ void Player::Rotate() {
 
 void Player::Attack() {
 	if (input_->TriggerKey(DIK_SPACE)) {
+		//弾があれば開放する
+		
 		//弾を生成し初期化
 		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Initialize(model_, worldTransform_.translation_);
 		//弾を登録する
-		bullet_ = newBullet;
+		bullets_.push_back(newBullet);
 	}
 }
+
