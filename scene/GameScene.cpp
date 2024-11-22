@@ -7,7 +7,7 @@ GameScene::GameScene() {}
 GameScene::~GameScene() {
 	delete sprite_;
 	delete player_;
-	
+	delete enemy_;
 }
 
 void GameScene::Initialize() {
@@ -25,11 +25,18 @@ void GameScene::Initialize() {
 
 	player_ = new Player();
 	player_->Initialize(model_, textureHandle_, &viewProjection_);
+
+	enemy_ = new Enemy();
+	Vector3 Position = {0, 0, 50};
+	enemy_->Initialize(model_, textureHandle_, Position);
 	
 }
 
 void GameScene::Update() { 
 	player_->Update();
+	if (enemy_) {
+	enemy_->Update();
+	}
 }
     
 
@@ -57,6 +64,9 @@ void GameScene::Update() {
 	Model::PreDraw(commandList);
 
 	player_->Draw();
+	if (enemy_) {
+		enemy_->Draw(viewProjection_);
+	}
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる

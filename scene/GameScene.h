@@ -10,6 +10,9 @@
 #include "WorldTransform.h"
 #include "TextureManager.h"
 #include <cassert>
+#include "Enemy.h"
+#include "Vector3.h"
+#include "MathUtilityForText.h"
 
 class GameScene {
 public:
@@ -51,6 +54,8 @@ private:
 	Player* player_ = nullptr;
 	// プレイヤーのモデル
 	Model* model_ = nullptr;
+	//敵
+	Enemy* enemy_ = nullptr;
 
 	ViewProjection viewProjection_;
 	
