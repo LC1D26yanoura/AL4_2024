@@ -6,6 +6,7 @@
 #include "input.h"
 #include "MathUtilityForText.h"
 #include "imgui.h"
+#include "PlayerBullet.h"
 
 class Player {
 public:
@@ -25,10 +26,14 @@ public:
 	void Draw();
 
 /// <summary>
-/// 
+/// 旋回
 /// </summary>
-	
 	void Rotate();
+	
+/// <summary>
+/// 攻撃
+/// </summary>
+	void Attack();
 
 private:
 	//ワールド変換データ
@@ -41,4 +46,6 @@ private:
 	ViewProjection* viewProjection_ = nullptr;
 	//キーボード入力
 	Input* input_ = nullptr;
+	//弾
+	PlayerBullet* bullet_ = nullptr;
 };

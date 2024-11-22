@@ -30,7 +30,6 @@ void GameScene::Initialize() {
 
 void GameScene::Update() { 
 	player_->Update();
-	player_->Rotate();
 }
     
 

@@ -45,19 +45,27 @@ void Player::Update() {
 	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 	// 行列更新
-	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+	worldTransform_.UpdateMatrix();
 	// 行列を定数バッファに転送
 	worldTransform_.TransferMatrix();
-	//キャラクターの座標を画面表示する処理
-	//ImGui::Begin("");
-	//
-	//ImGui::End();
-
 	
+	//旋回呼び出し
+	Rotate();
+	
+	//攻撃呼び出し
+	Attack();
+	//弾更新
+	if (bullet_) {
+		bullet_->Update();
+	}
 }
 
 void Player::Draw() { 
 	model_->Draw(worldTransform_, *viewProjection_, textureHandle_); 
+	//弾描画
+	if (bullet_) {
+		bullet_->Draw(*viewProjection_);
+	}
 }
 
 void Player::Rotate() {
@@ -68,5 +76,15 @@ void Player::Rotate() {
 	}
 	if (input_->PushKey(DIK_RIGHT)) {
 		worldTransform_.rotation_.y += kRotSpeed;
+	}
+}
+
+void Player::Attack() {
+	if (input_->TriggerKey(DIK_SPACE)) {
+		//弾を生成し初期化
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(model_, worldTransform_.translation_);
+		//弾を登録する
+		bullet_ = newBullet;
 	}
 }
