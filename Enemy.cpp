@@ -14,14 +14,28 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle, const Vector3& Posi
 	worldTransform_.translation_ = Position;
 
 	// 引数で受け取った速度をメンバ変数に代入
-	velocity_ = {0, 0, 0.3f};
+	velocity_ = {0, 0, 0.1f};
 
 }
 
 void Enemy::Update() {
 	worldTransform_.UpdateMatrix();
-	// 座標を移動させる
-	worldTransform_.translation_ -= velocity_;
+
+	switch (phase_) { case Phase::Approach:
+	default:
+		//移動
+		worldTransform_.translation_ -= velocity_;
+		//既定の位置に到達したら離脱
+		if (worldTransform_.translation_.z < 0.0f) {
+			phase_ = Phase::Leave;
+		}
+		break;
+	case Phase::Leave:
+		//移動
+		worldTransform_.translation_ += velocity_;
+		break;
+	}
+
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection) { 

@@ -8,6 +8,11 @@
 #include "Vector3.h"
 #include "MathUtilityForText.h"
 
+enum class Phase {
+	Approach,
+	Leave,
+};
+
 class Enemy {
 public:
 	/// <summary>
@@ -34,4 +39,7 @@ private:
 	uint32_t textureHandle_ = 0u;
 	// 速度
 	Vector3 velocity_;
+	//フェーズ
+	Phase phase_ = Phase::Approach;
 };
+
