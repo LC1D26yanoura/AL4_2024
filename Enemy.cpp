@@ -33,7 +33,7 @@ void Enemy::Update() {
 	case Phase::Leave:
 		//移動
 		worldTransform_.translation_ += velocity_;
-		break;
+		break; 
 	}
 
 }
