@@ -3,24 +3,15 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include "MathUtilityForText.h"
 #include "TextureManager.h"
 #include "Vector3.h"
 #include "MathUtilityForText.h"
-#include "EnemyBullet.h"
-#include <list>
 
-enum class Phase {
-	Approach,
-	Leave,
-};
-
-class Enemy {
-public:
+class EnemyBullet {
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model, uint32_t textureHandle, const Vector3& Position);
+	void Initialize(Model* model, const Vector3& Position, const Vector3& velocity);
 
 	/// <summary>
 	/// 毎フレーム処理
@@ -32,16 +23,6 @@ public:
 	/// </summary>
 	void Draw(const ViewProjection& viewProjection);
 
-	/// <summary>
-	/// 攻撃
-	/// </summary>
-	void Attack();
-
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
-	~Enemy();
-
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
@@ -51,9 +32,6 @@ private:
 	uint32_t textureHandle_ = 0u;
 	// 速度
 	Vector3 velocity_;
-	//フェーズ
-	Phase phase_ = Phase::Approach;
-	// 弾
-	std::list<EnemyBullet*> bullets_;
-};
 
+
+};
