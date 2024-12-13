@@ -28,6 +28,8 @@ Vector3 Enemy::GetWorldPosition() {
 	return worldPos;
 }
 
+void Enemy::OnCollision() {}
+
 void Enemy::Initialize(Model* model, uint32_t textureHandle, const Vector3& Position) {
 	assert(model);
 

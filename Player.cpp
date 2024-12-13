@@ -19,6 +19,7 @@ Vector3 Player::GetWorldPosition() {
 
 	return worldPos;
 }
+void Player::OnCollision() {}
 	void Player::Initialize(Model * model, uint32_t textureHandle, ViewProjection * viewProjection) { 
 	assert(model);
 
