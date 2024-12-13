@@ -9,6 +9,8 @@
 #include "MathUtilityForText.h"
 #include "EnemyBullet.h"
 #include <list>
+//自機クラスの前方宣言
+class Player;
 
 enum class Phase {
 	Approach,
@@ -53,7 +55,13 @@ public:
 	//接近フェーズ初期化
 	void Approachphase();
 
-private:
+	void SetPlayer(Player* player) { player_ = player; }
+	
+	// ワールド座標を取得
+		Vector3 GetWorldPosition();
+	
+
+	private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 	// モデル
@@ -68,5 +76,7 @@ private:
 	std::list<EnemyBullet*> bullets_;
 	//発射タイマー
 	int32_t fireTimer_ = 0;
+	//自キャラ
+	Player* player_ = nullptr;
 };
 

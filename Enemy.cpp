@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include "EnemyBullet.h"
+#include "Player.h"
 #include "cassert"
 
 Enemy::~Enemy() {
@@ -9,12 +10,22 @@ Enemy::~Enemy() {
 	bullets_.clear();
 }
 
-void Enemy::fire() {
-	Attack(); }
+void Enemy::fire() { Attack(); }
 
 void Enemy::Approachphase() {
-//発射タイマーを初期化
+	// 発射タイマーを初期化
 	fireTimer_ = kFireInterval;
+}
+
+Vector3 Enemy::GetWorldPosition() {
+	// ワールド座標を入れる変数
+	Vector3 worldPos;
+	// ワールド行列の平行移動成分を取得
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+
+	return worldPos;
 }
 
 void Enemy::Initialize(Model* model, uint32_t textureHandle, const Vector3& Position) {
@@ -32,37 +43,38 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle, const Vector3& Posi
 	// 引数で受け取った速度をメンバ変数に代入
 	velocity_ = {0, 0, 0.1f};
 
-	//fire();
+	// fire();
 
-	//接近フェーズ初期化
+	// 接近フェーズ初期化
 	Approachphase();
 }
 
 void Enemy::Update() {
 	worldTransform_.UpdateMatrix();
 
-	switch (phase_) { case Phase::Approach:
+	switch (phase_) {
+	case Phase::Approach:
 	default:
-		//移動
+		// 移動
 		worldTransform_.translation_ -= velocity_;
-		//発射タイマーをデクリメント
+		// 発射タイマーをデクリメント
 		fireTimer_--;
-		//指定時間に達した
+		// 指定時間に達した
 		if (fireTimer_ == 0) {
-		//弾を発射
+			// 弾を発射
 			fire();
-			//発射タイマーを初期化
+			// 発射タイマーを初期化
 			fireTimer_ = kFireInterval;
 		}
-		//既定の位置に到達したら離脱
+		// 既定の位置に到達したら離脱
 		if (worldTransform_.translation_.z < 0.0f) {
 			phase_ = Phase::Leave;
 		}
 		break;
 	case Phase::Leave:
-		//移動
+		// 移動
 		worldTransform_.translation_ += velocity_;
-		break; 
+		break;
 	}
 	// 弾更新
 	for (EnemyBullet* bullet : bullets_) {
@@ -78,7 +90,7 @@ void Enemy::Update() {
 	});
 }
 
-void Enemy::Draw(const ViewProjection& viewProjection) { 
+void Enemy::Draw(const ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 	for (EnemyBullet* bullet : bullets_) {
 		bullet->Draw(viewProjection);
@@ -86,18 +98,23 @@ void Enemy::Draw(const ViewProjection& viewProjection) {
 }
 
 void Enemy::Attack() {
-	
-		// 弾の速度
-		const float kBulletSpeed = 1.0f;
-		Vector3 velocity(0, 0, kBulletSpeed);
-		// 速度ベクトルを時期に向きに合わせて回転させる
-		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+	assert(player_);
 
-		// 弾を生成し初期化
-		EnemyBullet* newBullet = new EnemyBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
-		// 弾を登録する
-		bullets_.push_back(newBullet);
-	
+	// 弾の速度
+	const float kBulletSpeed = 1.0f;
+	Vector3 velocity(0, 0, 0);
+
+	Vector3 playerPos = player_->GetWorldPosition();
+	Vector3 enemyPos = GetWorldPosition();
+	Vector3 attackPos = enemyPos - playerPos;
+	attackPos = Normalize(attackPos);
+	velocity.x += kBulletSpeed * attackPos.x;
+	velocity.y += kBulletSpeed * attackPos.y;
+	velocity.z += kBulletSpeed * attackPos.z;
+
+	// 弾を生成し初期化
+	EnemyBullet* newBullet = new EnemyBullet();
+	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+	// 弾を登録する
+	bullets_.push_back(newBullet);
 }
-

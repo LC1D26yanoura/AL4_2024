@@ -30,7 +30,9 @@ void GameScene::Initialize() {
 	enemy_ = new Enemy();
 	Vector3 Position = {0, 0, 50};
 	enemy_->Initialize(model_, textureHandle_, Position);
-	
+	//敵キャラに自キャラのアドレスを渡す
+	enemy_->SetPlayer(player_);
+
 }
 
 void GameScene::Update() { 
