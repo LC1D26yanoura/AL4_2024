@@ -65,6 +65,14 @@ void Player::Update() {
 	for (PlayerBullet * bullet : bullets_) {
 		bullet->Update();
 	}
+	//デスフラグの立った球を削除
+	bullets_.remove_if([](PlayerBullet* bullets_) {
+		if (bullets_->IsDead()) {
+			delete bullets_;
+			return true;
+		}
+		return false;
+	});
 }
 
 void Player::Draw() { 

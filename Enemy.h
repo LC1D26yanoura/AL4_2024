@@ -42,6 +42,17 @@ public:
 	/// </summary>
 	~Enemy();
 
+/// <summary>
+/// 弾発射
+/// </summary>
+	void fire();
+
+//発射間隔
+	static const int kFireInterval = 60;
+
+	//接近フェーズ初期化
+	void Approachphase();
+
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
@@ -55,5 +66,7 @@ private:
 	Phase phase_ = Phase::Approach;
 	// 弾
 	std::list<EnemyBullet*> bullets_;
+	//発射タイマー
+	int32_t fireTimer_ = 0;
 };
 

@@ -5,9 +5,10 @@ GameScene::GameScene() {}
 
 // デストラクタ
 GameScene::~GameScene() {
-	delete sprite_;
+	
 	delete player_;
 	delete enemy_;
+	
 }
 
 void GameScene::Initialize() {

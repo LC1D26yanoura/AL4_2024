@@ -8,6 +8,7 @@
 #include "MathUtilityForText.h"
 
 class EnemyBullet {
+public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -23,6 +24,13 @@ class EnemyBullet {
 	/// </summary>
 	void Draw(const ViewProjection& viewProjection);
 
+	/// <summary>
+	/// 寿命
+	/// </summary>
+	static const int32_t kLifetime = 60 * 5;
+
+	bool IsDead() const { return isDead_; }
+
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
@@ -32,6 +40,9 @@ private:
 	uint32_t textureHandle_ = 0u;
 	// 速度
 	Vector3 velocity_;
-
+	// デスタイマー
+	int32_t deathTimer_ = kLifetime;
+	// デスフラグ
+	bool isDead_ = false;
 
 };

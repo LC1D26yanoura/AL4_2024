@@ -1,10 +1,20 @@
 #include "Enemy.h"
+#include "EnemyBullet.h"
 #include "cassert"
 
 Enemy::~Enemy() {
 	for (EnemyBullet* bullet : bullets_) {
 		delete bullet;
 	}
+	bullets_.clear();
+}
+
+void Enemy::fire() {
+	Attack(); }
+
+void Enemy::Approachphase() {
+//発射タイマーを初期化
+	fireTimer_ = kFireInterval;
 }
 
 void Enemy::Initialize(Model* model, uint32_t textureHandle, const Vector3& Position) {
@@ -22,6 +32,10 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle, const Vector3& Posi
 	// 引数で受け取った速度をメンバ変数に代入
 	velocity_ = {0, 0, 0.1f};
 
+	//fire();
+
+	//接近フェーズ初期化
+	Approachphase();
 }
 
 void Enemy::Update() {
@@ -31,6 +45,15 @@ void Enemy::Update() {
 	default:
 		//移動
 		worldTransform_.translation_ -= velocity_;
+		//発射タイマーをデクリメント
+		fireTimer_--;
+		//指定時間に達した
+		if (fireTimer_ == 0) {
+		//弾を発射
+			fire();
+			//発射タイマーを初期化
+			fireTimer_ = kFireInterval;
+		}
 		//既定の位置に到達したら離脱
 		if (worldTransform_.translation_.z < 0.0f) {
 			phase_ = Phase::Leave;
@@ -45,10 +68,22 @@ void Enemy::Update() {
 	for (EnemyBullet* bullet : bullets_) {
 		bullet->Update();
 	}
+	// デスフラグの立った球を削除
+	bullets_.remove_if([](EnemyBullet* bullets_) {
+		if (bullets_->IsDead()) {
+			delete bullets_;
+			return true;
+		}
+		return false;
+	});
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection) { 
-	model_->Draw(worldTransform_, viewProjection, textureHandle_); }
+	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	for (EnemyBullet* bullet : bullets_) {
+		bullet->Draw(viewProjection);
+	}
+}
 
 void Enemy::Attack() {
 	
