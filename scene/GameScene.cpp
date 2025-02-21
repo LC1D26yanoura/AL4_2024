@@ -40,6 +40,7 @@ void GameScene::Update() {
 	if (enemy_) {
 	enemy_->Update();
 	}
+	CheckAllCollisions();
 }
     
 
@@ -94,15 +95,81 @@ void GameScene::Update() {
     }
 
     void GameScene::CheckAllCollisions() {
-	//判定対象AとBの座標
+	    // 判定対象AとBの座標
 	    Vector3 posA, posB;
-		//自弾リストの取得
+	    // 自弾リストの取得
 	    const std::list<PlayerBullet*>& PlayerBullets = player_->GetBullets();
 	    // 敵弾リストの取得
 	    const std::list<EnemyBullet*>& EnemyBullets = enemy_->GetBullets();
 
+#pragma region 自キャラと敵弾の当たり判定
+	    {
+		    // 自キャラの座標
+		    posA = player_->GetWorldPosition();
+		    // 自キャラと敵弾全ての当たり判定
+		    for (EnemyBullet* bullet : EnemyBullets) {
+			    // 敵弾の座標
+			    posB = bullet->GetWorldPosition();
+			    // 座標の差分ベクトル
+			    Vector3 subtract = posB - posA;
+			    // 座標AとBの距離を求める
+			    float distance = Length(subtract);
+			    // 球と球の交差判定
+			    if (distance < 1.5f + 1.5f) {
+				    // 自キャラの衝突時コールバックを呼び出す
+				    player_->OnCollision();
+				    // 敵弾の衝突時コールバックを呼び出す
+				    bullet->OnCollision();
+			    }
+		    }
+	    }
+#pragma endregion
 
-
-
-	}
-
+#pragma region 自弾と敵キャラの当たり判定
+	    {
+		    // 敵キャラの座標
+		    posA = enemy_->GetWorldPosition();
+		    // 敵キャラと自弾全ての当たり判定
+		    for (PlayerBullet* bullet : PlayerBullets) {
+			    // 敵弾の座標
+			    posB = bullet->GetWorldPosition();
+			    // 座標の差分ベクトル
+			    Vector3 subtract = posB - posA;
+			    // 座標AとBの距離を求める
+			    float distance = Length(subtract);
+			    // 球と球の交差判定
+			    if (distance < 1.5f + 1.5f) {
+				    // 自弾の衝突時コールバックを呼び出す
+				    enemy_->OnCollision();
+				    // 敵弾の衝突時コールバックを呼び出す
+				    bullet->OnCollision();
+			    }
+		    }
+	    }
+#pragma endregion
+#pragma region 自弾と敵弾の当たり判定
+	    {
+		    // 自弾全てについて
+		    for (PlayerBullet* playerBullet : PlayerBullets) {
+			    // 自弾の座標
+			    posA = playerBullet->GetWorldPosition();
+			    // 敵弾全てについて
+			    for (EnemyBullet* enemyBullet : EnemyBullets) {
+				    // 敵弾の座標
+				    posB = enemyBullet->GetWorldPosition();
+				    // 座標の差分ベクトル
+				    Vector3 subtract = posB - posA;
+				    // 座標AとBの距離を求める
+				    float distance = Length(subtract);
+				    // 球と球の交差判定
+				    if (distance < 1.5f + 1.5f) {
+					    // 自弾の衝突時コールバックを呼び出す
+ 					    playerBullet->OnCollision();
+					    // 敵弾の衝突時コールバックを呼び出す
+					    enemyBullet->OnCollision();
+				    }
+			    }
+		    }
+	    }
+#pragma endregion
+    }
