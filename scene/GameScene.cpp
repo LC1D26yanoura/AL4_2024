@@ -8,11 +8,12 @@ GameScene::~GameScene() {
 	
 	delete player_;
 	delete enemy_;
-	
+	delete modelSkydome_;
 }
 
 void GameScene::Initialize() {
-
+	// ゲームプレイフェーズから開始
+	phase_ = Phase::kPlay;
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
@@ -20,9 +21,19 @@ void GameScene::Initialize() {
 	textureHandle_ = TextureManager::Load("mario.jpg");
 	sprite_ = Sprite::Create(textureHandle_, {100, 50});
 
+	// スカイドームの生成
+	skydome_ = new Skydome();
+
 	model_ = Model::Create();
 	// ViewProjectionの初期化
 	viewProjection_.Initialize();
+
+		// 3Dモデルの生成(skydome)
+	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
+
+	// スカイドームの初期化
+	skydome_->Initialize(modelSkydome_, &viewProjection_);
+
 
 	player_ = new Player();
 	player_->Initialize(model_, textureHandle_, &viewProjection_);
@@ -36,11 +47,15 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() { 
-	player_->Update();
-	if (enemy_) {
-	enemy_->Update();
-	}
-	CheckAllCollisions();
+		player_->Update();
+		if (enemy_) {
+			enemy_->Update();
+		}
+	    // スカイドームの更新
+	    skydome_->Update();
+
+		CheckAllCollisions();
+	    finished_ = player_->Isdead();
 }
     
 
@@ -67,10 +82,14 @@ void GameScene::Update() {
 	// 3Dオブジェクト描画前処理
 	Model::PreDraw(commandList);
 
+	// スカイドームの描画
+	skydome_->Draw();
+
 	player_->Draw();
 	if (enemy_) {
 		enemy_->Draw(viewProjection_);
 	}
+
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる

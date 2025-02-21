@@ -13,10 +13,21 @@
 #include "Enemy.h"
 #include "Vector3.h"
 #include "MathUtilityForText.h"
+#include"Skydome.h"
 
 class GameScene {
 public:
 	Sprite* sprite_ = nullptr;
+
+	// ゲームのフェーズ
+	enum class Phase {
+		kPlay,  // ゲームプレイ
+		kDeath, // デス演出
+	};
+
+	// ゲームの現在フェーズ（変数）
+	Phase phase_;
+
 	/// <summary>
 	/// コンストクラタ
 	/// </summary>
@@ -44,8 +55,16 @@ public:
 
 	//衝突判定と応答
 	void CheckAllCollisions();
-	
+
+	void ChangePhase();
+
+	// デスフラグのgetter
+	bool IsFinished() const { return finished_; }
+
+
 private:
+	// 終了フラグ
+	bool finished_ = false;
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
@@ -56,7 +75,11 @@ private:
 	Model* model_ = nullptr;
 	//敵
 	Enemy* enemy_ = nullptr;
+	// スカイドームキャラ
+	Skydome* skydome_ = nullptr;
 
 	ViewProjection viewProjection_;
-	
+	// 3Dモデル
+	Model* modelSkydome_ = nullptr;
+
 };
